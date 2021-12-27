@@ -4,16 +4,11 @@ const dateFormat = require('../utils/dateFormat');
 
 const reactionSchema = new Schema(
     {
-        //reactionId
-        reactionId: {
-            type: Schema.Types.ObjectId,
-            default: () => new Types.ObjectId()
-        },
         //reactionBody
         reactionBody: {
             type: String,
             required: true,
-            match: [/^([a-zA-Z0-9 _\.-]{1,280})$/, 'Please only use up to 280 characters']
+            match: [/^([a-zA-Z0-9 _\.-]{1,280})$/, 'Please use between 1 and 280 characters']
         },
         //username
         username: {
@@ -41,7 +36,7 @@ const ThoughtSchema = new Schema(
         thoughtText: {
             type: String,
             required: true,
-            match: [/^([a-zA-Z0-9 _\.-]{1,280})$/, 'Please use 1 - 280 characters']
+            match: [/^([a-zA-Z0-9 _\.-]{1,280})$/, 'Please use between 1 - 280 characters']
         },
         //createdAt
         createdAt: {
