@@ -2,31 +2,77 @@
 const { Schema, model } = require('mongoose');
 const dateFormat = require('../utils/dateFormat');
 
+const reactionSchema = new Schema(
+    {
+        //reactionId
+        reactionId: {
+            type: Schema.Types.ObjectId,
+            default: () => new Types.ObjectId()
+        },
+        //reactionBody
+        reactionBody: {
+            type: String,
+            required: true,
+            match: [/^([a-zA-Z0-9 _\.-]{1,280})$/, 'Please only use up to 280 characters']
+        },
+        //username
+        username: {
+            type: String,
+            required: true
+        },
+        //createdAt
+        createdAt: {
+            type: Date,
+            default: Date.now,
+            get: (createdAtVal) => dateFormat(createdAtVal)
+        }
+    },
+    {
+        toJSON: {
+            getters: true
+        },
+        id: false
+    }
+);
+
 const ThoughtSchema = new Schema(
-    //thoughtText
     {
-
+        //thoughtText
+        thoughtText: {
+            type: String,
+            required: true,
+            match: [/^([a-zA-Z0-9 _\.-]{1,280})$/, 'Please use 1 - 280 characters']
+        },
+        //createdAt
+        createdAt: {
+            type: Date,
+            default: Date.now,
+            get: (createdAtVal) => dateFormat(createdAtVal)
+        },
+        //username(that created this thought)
+        username: {
+            type: String,
+            required: true
+        },
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        //reactions [reactionSchema]
+        reactions: [reactionSchema]
     },
-    //createdAt
     {
-
-    },
-    //username(that created this thought)
-    {
-
-    },
-    //reactions [reactionSchema]
-    {
-    //reactionId
-    //reactionBody
-    //username
-    //createdAt
+        toJSON: {
+            virtuals: true,
+            getters: true
+        },
+        id: false
     }
 )
 
 //virtual for reactionCount
 ThoughtSchema.virtual('reactionCount').get(function() {
-    return this.reactions.reduce((total, reaction) => total + reaction.replies.length + 1, 0);
+    return this.reactions.length;
 });
 
 //exports
